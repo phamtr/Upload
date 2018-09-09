@@ -1,15 +1,22 @@
-const IncomingForm = require('formidable').IncomingForm;
+var formidable = require('formidable');
+var path = require('path');
+
 
 module.exports = function upload(req, res) {
-    var form = new IncomingForm();
+    var form = new formidable.IncomingForm();
 
-form.on('file', (field, file) => {
-    // Do something with the file
-    // e.g. save it to the database
-    // you can access it using file.path
-});
-form.on('end', () => {
-    res.json();
-});
-form.parse(req);
+    form.parse(req);
+
+    form.on('fileBegin', function (name, file){
+        
+        file.path = __dirname + '/data/' + 'Photo-' + Date.now()+ file.name;
+    });
+   
+    form.on('file', function (name, file){
+        console.log('Uploaded ' + 'Photo-' + Date.now()+ file.name);
+    });
+
+    return res.json(200, {
+	result: 'Upload Success'
+    });
 };
